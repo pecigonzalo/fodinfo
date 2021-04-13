@@ -3,7 +3,6 @@ module fodinfo.App
 open System
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Cors.Infrastructure
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
@@ -44,7 +43,6 @@ let configureApp (app: IApplicationBuilder) =
         .UseHealthChecks(PathString("/readyz"))
         .UseDefaultFiles()
         .UseStaticFiles()
-        .UseResponseCaching()
         .UseGiraffe(fodinfo.Routing.routes)
 
 let configureServices (services: IServiceCollection) =
