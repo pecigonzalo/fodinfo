@@ -1,4 +1,4 @@
-module podinfo.Handlers
+module fodinfo.Handlers
 
 open Microsoft.AspNetCore.Http
 open FSharp.Control.Tasks
@@ -12,6 +12,13 @@ let handleGetHello =
         }
 
 let handleHealthz =
+    fun (next: HttpFunc) (ctx: HttpContext) ->
+        task {
+            let response = "OK"
+            return! json response next ctx
+        }
+
+let handleInfo =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let response = "OK"

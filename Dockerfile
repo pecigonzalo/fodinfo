@@ -23,7 +23,7 @@ RUN dotnet publish -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "podinfo.dll"]
+ENTRYPOINT ["dotnet", "fodinfo.dll"]
 
 HEALTHCHECK \
   --interval=5s --timeout=10s --start-period=5s --retries=3 \

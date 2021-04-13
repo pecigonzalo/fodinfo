@@ -1,12 +1,12 @@
-module podinfo.Routing
+module fodinfo.Routing
 
 open Giraffe
 open Microsoft.AspNetCore.Http
-open podinfo.Handlers
+open fodinfo.Handlers
 
 let api : HttpFunc -> HttpContext -> HttpFuncResult =
-    choose [ GET
-             >=> choose [ route "/hello" >=> handleGetHello ] ]
+    choose [ GET >=> route "/hello" >=> handleGetHello
+             GET >=> route "/info" >=> handleInfo ]
 
 let routes : HttpFunc -> HttpContext -> HttpFuncResult =
     choose [ route "/healthz" >=> handleHealthz

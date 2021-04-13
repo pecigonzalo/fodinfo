@@ -1,4 +1,4 @@
-module podinfo.App
+module fodinfo.App
 
 open System
 open Microsoft.AspNetCore.Http
@@ -45,7 +45,7 @@ let configureApp (app: IApplicationBuilder) =
         .UseDefaultFiles()
         .UseStaticFiles()
         .UseResponseCaching()
-        .UseGiraffe(podinfo.Routing.routes)
+        .UseGiraffe(fodinfo.Routing.routes)
 
 let configureServices (services: IServiceCollection) =
     services.AddHealthChecks().ForwardToPrometheus()

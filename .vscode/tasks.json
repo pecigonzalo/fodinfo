@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/podinfo.fsproj",
+        "${workspaceFolder}/fodinfo.fsproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/podinfo.fsproj",
+        "${workspaceFolder}/fodinfo.fsproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -32,7 +32,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/podinfo.fsproj",
+        "${workspaceFolder}/fodinfo.fsproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -45,14 +45,14 @@
         "build"
       ],
       "dockerBuild": {
-        "tag": "podinfo:dev",
+        "tag": "fodinfo:dev",
         "target": "base",
         "dockerfile": "${workspaceFolder}/Dockerfile",
         "context": "${workspaceFolder}",
         "pull": true
       },
       "netCore": {
-        "appProject": "${workspaceFolder}/podinfo.fsproj"
+        "appProject": "${workspaceFolder}/fodinfo.fsproj"
       }
     },
     {
@@ -62,13 +62,13 @@
         "build"
       ],
       "dockerBuild": {
-        "tag": "podinfo:latest",
+        "tag": "fodinfo:latest",
         "dockerfile": "${workspaceFolder}/Dockerfile",
         "context": "${workspaceFolder}",
         "pull": true
       },
       "netCore": {
-        "appProject": "${workspaceFolder}/podinfo.fsproj"
+        "appProject": "${workspaceFolder}/fodinfo.fsproj"
       }
     },
     {
@@ -79,7 +79,7 @@
       ],
       "dockerRun": {},
       "netCore": {
-        "appProject": "${workspaceFolder}/podinfo.fsproj",
+        "appProject": "${workspaceFolder}/fodinfo.fsproj",
         "enableDebugging": true
       }
     },
@@ -91,7 +91,7 @@
       ],
       "dockerRun": {},
       "netCore": {
-        "appProject": "${workspaceFolder}/podinfo.fsproj"
+        "appProject": "${workspaceFolder}/fodinfo.fsproj"
       }
     }
   ]
