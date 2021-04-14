@@ -1,7 +1,7 @@
 module fodinfo.Handlers
 
 open Microsoft.AspNetCore.Http
-open Microsoft.AspNetCore.Routing
+open Microsoft.Extensions.Logging
 open FSharp.Control.Tasks
 open Giraffe
 open fodinfo
@@ -57,12 +57,6 @@ let handlePanic : HttpHandler =
 
 let handleVersion : HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
-        // ctx.Request.Path
-        let a = ctx.GetRouteData()
-        printfn "%A %A" a.Values a.DataTokens
-        let b = ctx.GetEndpoint()
-        printfn "%A" b
-
         task {
             let config = Config.getConfiguration
             let response = config.version
