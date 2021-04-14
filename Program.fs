@@ -10,12 +10,14 @@ open Microsoft.Extensions.DependencyInjection
 open Prometheus
 open Giraffe
 open Giraffe.EndpointRouting
+open Serilog
+open Serilog.Events
 
 // ---------------------------------
 // Error handler
 // ---------------------------------
 
-let errorHandler (ex: Exception) (logger: ILogger) =
+let errorHandler (ex: Exception) (logger: Microsoft.Extensions.Logging.ILogger) =
     logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
 
     clearResponse
@@ -27,15 +29,22 @@ let errorHandler (ex: Exception) (logger: ILogger) =
 // ---------------------------------
 
 let configureApp (app: IApplicationBuilder) =
-    app.UseGiraffeErrorHandler(errorHandler) |> ignore
+    let env =
+        app.ApplicationServices.GetService<IWebHostEnvironment>()
+
+    match env.IsDevelopment() with
+    | true -> app.UseDeveloperExceptionPage()
+    | false -> app.UseGiraffeErrorHandler(errorHandler)
+    |> ignore
+
+    app.UseSerilogRequestLogging() |> ignore
+    app.UseDefaultFiles() |> ignore
+    app.UseStaticFiles() |> ignore
     app.UseRouting() |> ignore
     app.UseMetricServer("/metrics") |> ignore
 
     app.UseHealthChecks(PathString("/readyz"))
     |> ignore
-
-    app.UseDefaultFiles() |> ignore
-    app.UseStaticFiles() |> ignore
 
     app.UseHttpMetrics(
         configure =
@@ -51,18 +60,29 @@ let configureServices (services: IServiceCollection) =
     services.AddGiraffe() |> ignore
 
 
-let configureLogging (logging: ILoggingBuilder) =
-    logging.AddConsole().AddDebug() |> ignore
+let configureLogging (ctx: HostBuilderContext) (logger: LoggerConfiguration) =
+    logger.Enrich.FromLogContext() |> ignore
+
+    logger
+        .MinimumLevel
+        .Override("Microsoft", LogEventLevel.Information)
+        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    |> ignore
+
+    match ctx.HostingEnvironment.IsDevelopment() with
+    | true -> logger.WriteTo.Console(theme = Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+    | false -> logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
+    |> ignore
 
 [<EntryPoint>]
 let main args =
     Host
         .CreateDefaultBuilder(args)
+        .UseSerilog(Action<HostBuilderContext, LoggerConfiguration> configureLogging)
         .ConfigureWebHostDefaults(fun webHostBuilder ->
             webHostBuilder
                 .Configure(Action<IApplicationBuilder> configureApp)
                 .ConfigureServices(configureServices)
-                .ConfigureLogging(configureLogging)
             |> ignore)
         .Build()
         .Run()
