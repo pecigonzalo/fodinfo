@@ -9,14 +9,18 @@
   <ItemGroup>
     <PackageReference Include="Giraffe" Version="5.0.0-rc-6" />
     <PackageReference Include="Ply" Version="0.3.*" />
-    <PackageReference Include="prometheus-net.AspNetCore" Version="4.1.1" />
+    <!-- <PackageReference Include="prometheus-net.AspNetCore" Version="4.1.1" /> -->
     <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="Config/*.fs" />
     <Compile Include="Handlers/*.fs" />
-    <Compile Include="Routing.fs" />
+    <Compile Include="Endpoints.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="pkgs/prometheus-net/Prometheus.AspNetCore/Prometheus.AspNetCore.csproj" />
   </ItemGroup>
 </Project>

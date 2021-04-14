@@ -7,8 +7,9 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
-open Giraffe
 open Prometheus
+open Giraffe
+open Giraffe.EndpointRouting
 
 // ---------------------------------
 // Error handler
@@ -26,35 +27,32 @@ let errorHandler (ex: Exception) (logger: ILogger) =
 // ---------------------------------
 
 let configureApp (app: IApplicationBuilder) =
-    let env =
-        app.ApplicationServices.GetService<IWebHostEnvironment>()
+    app.UseGiraffeErrorHandler(errorHandler) |> ignore
+    app.UseRouting() |> ignore
+    app.UseMetricServer("/metrics") |> ignore
 
-    let defaultOptions =
-        match env.IsDevelopment() with
-        | true -> app.UseDeveloperExceptionPage()
-        | false ->
-            app
-                .UseGiraffeErrorHandler(errorHandler)
-                .UseHttpsRedirection()
-
-    defaultOptions
-        .UseHttpMetrics()
-        .UseMetricServer()
-        .UseHealthChecks(PathString("/readyz"))
-        .UseDefaultFiles()
-        .UseStaticFiles()
-        .UseGiraffe(fodinfo.Routing.routes)
-
-let configureServices (services: IServiceCollection) =
-    services.AddHealthChecks().ForwardToPrometheus()
+    app.UseHealthChecks(PathString("/readyz"))
     |> ignore
 
-    services.AddCors() |> ignore
+    app.UseDefaultFiles() |> ignore
+    app.UseStaticFiles() |> ignore
+
+    app.UseHttpMetrics(
+        configure =
+            (fun options -> options.AddLabel(labelName = "path", valueProvider = (fun ctx -> string ctx.Request.Path)))
+    )
+    |> ignore
+
+    app.UseGiraffe(Endpoints.endpoints) |> ignore
+
+let configureServices (services: IServiceCollection) =
+    services.AddHealthChecks() |> ignore
+    services.AddRouting() |> ignore
     services.AddGiraffe() |> ignore
 
 
-let configureLogging (builder: ILoggingBuilder) =
-    builder.AddConsole().AddDebug() |> ignore
+let configureLogging (logging: ILoggingBuilder) =
+    logging.AddConsole().AddDebug() |> ignore
 
 [<EntryPoint>]
 let main args =
