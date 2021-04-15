@@ -6,7 +6,8 @@ open Giraffe.EndpointRouting
 let apiEndpoints =
     [ GET [ route "/info" Info.handleInfo
             route "/panic" Panic.handlePanic
-            route "/echo" Echo.handleEcho ] ]
+            route "/echo" Echo.handleEcho
+            route "/env" Env.handleEnv ] ]
 
 let endpoints =
     [ GET [ route "/healthz" Healthz.handleHealthz
