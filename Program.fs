@@ -11,7 +11,7 @@ open Prometheus
 open Giraffe
 open Giraffe.EndpointRouting
 open Serilog
-open Serilog.Events
+
 
 // ---------------------------------
 // Error handler
@@ -63,11 +63,8 @@ let configureServices (services: IServiceCollection) =
 let configureLogging (ctx: HostBuilderContext) (logger: LoggerConfiguration) =
     logger.Enrich.FromLogContext() |> ignore
 
-    logger
-        .MinimumLevel
-        .Override("Microsoft", LogEventLevel.Information)
-        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-    |> ignore
+    // logger.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    // |> ignore
 
     match ctx.HostingEnvironment.IsDevelopment() with
     | true -> logger.WriteTo.Console(theme = Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
@@ -76,15 +73,17 @@ let configureLogging (ctx: HostBuilderContext) (logger: LoggerConfiguration) =
 
 [<EntryPoint>]
 let main args =
+    let exitCode = 0
+
     Host
         .CreateDefaultBuilder(args)
-        .UseSerilog(Action<HostBuilderContext, LoggerConfiguration> configureLogging)
+        .UseSerilog(configureLogging)
         .ConfigureWebHostDefaults(fun webHostBuilder ->
             webHostBuilder
-                .Configure(Action<IApplicationBuilder> configureApp)
+                .Configure(configureApp)
                 .ConfigureServices(configureServices)
             |> ignore)
         .Build()
         .Run()
 
-    0
+    exitCode

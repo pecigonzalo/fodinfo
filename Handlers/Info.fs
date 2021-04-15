@@ -1,17 +1,9 @@
-module fodinfo.Handlers
+module fodinfo.Handlers.Info
 
 open Microsoft.AspNetCore.Http
-open Microsoft.Extensions.Logging
 open FSharp.Control.Tasks
 open Giraffe
 open fodinfo
-
-let handleHealthz : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let response = "OK"
-            return! json response next ctx
-        }
 
 type RunetimeResponse =
     { Hostname: string
@@ -42,23 +34,5 @@ let handleInfo : HttpHandler =
                   Runtime = config.runtime
                   NumCPU = config.num_cpu }
 
-            return! json response next ctx
-        }
-
-let handleEcho : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let response = "OK"
-            return! json response next ctx
-        }
-
-let handlePanic : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) -> failwith "Panic command received"
-
-let handleVersion : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let config = Config.getConfiguration
-            let response = config.version
             return! json response next ctx
         }

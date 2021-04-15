@@ -4,11 +4,11 @@ open fodinfo.Handlers
 open Giraffe.EndpointRouting
 
 let apiEndpoints =
-    [ GET [ route "/info" handleInfo
-            route "/panic" handlePanic
-            route "/echo" handleEcho ] ]
+    [ GET [ route "/info" Info.handleInfo
+            route "/panic" Panic.handlePanic
+            route "/echo" Echo.handleEcho ] ]
 
 let endpoints =
-    [ GET [ route "/healthz" handleHealthz
-            route "/version" handleVersion
+    [ GET [ route "/healthz" Healthz.handleHealthz
+            route "/version" Version.handleVersion
             subRoute "/api" apiEndpoints ] ]
