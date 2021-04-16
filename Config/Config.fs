@@ -29,14 +29,14 @@ module Config =
         let mutable uiMessage =
             sprintf "greetings from fodinfo v%s" version
 
-        member __.UILogo
+        member _.UILogo
             with get () = uiLogo
             and set (value) = uiLogo <- value
 
-        member __.UIColor
+        member _.UIColor
             with get () = uiColor
             and set (value) = uiColor <- value
 
-        member __.UIMessage
+        member _.UIMessage
             with get () = uiMessage
             and set (value) = uiMessage <- value
