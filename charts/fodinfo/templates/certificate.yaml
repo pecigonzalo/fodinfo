@@ -1,0 +1,16 @@
+{{- if .Values.certificate.create -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ template "fodinfo.fullname" . }}
+  labels:
+    {{- include "fodinfo.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+  {{- range .Values.certificate.dnsNames }}
+    - {{ . | quote }}
+  {{- end }}
+  secretName: {{ template "fodinfo.tlsSecretName" . }}
+  issuerRef:
+  {{- .Values.certificate.issuerRef | toYaml | trimSuffix "\n" | nindent 4 }}
+{{- end }}

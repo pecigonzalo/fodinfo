@@ -12,15 +12,15 @@ let handleInfo : HttpHandler =
 
         let runtime = fodinfo.Config.Runtime
 
-        {| Hostname = runtime.hostname
-           Version = runtime.version
-           Color = config.UIColor
-           Logo = config.UILogo
-           Message = config.UIMessage
-           Revision = "OK"
-           OS = runtime.os
-           ARCH = runtime.arch
-           Runtime = runtime.runtime
-           NumCPU = runtime.num_cpu |}
+        {| hostname = runtime.hostname
+           version = runtime.version
+           color = config.UIColor
+           logo = config.UILogo
+           message = config.UIMessage
+           revision = "OK"
+           os = runtime.os
+           arch = runtime.arch
+           runtime = runtime.runtime
+           numcpu = runtime.num_cpu |}
         |> Response.ofJson
         <| ctx

@@ -1,0 +1,12 @@
+apiVersion: v1
+version: 5.2.0
+appVersion: 5.2.0
+name: fodinfo
+engine: gotpl
+description: fodinfo Helm chart for Kubernetes
+home: https://github.com/pecigonzalo/fodinfo
+maintainers:
+- email: pecigonzalo@users.noreply.github.com
+  name: pecigonzalo
+sources:
+- https://github.com/pecigonzalo/fodinfo
