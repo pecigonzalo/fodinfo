@@ -1,0 +1,30 @@
+# TODO: Enable when we support cache
+# {{- if .Values.cache }}
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: {{ template "fodinfo.fullname" . }}-cache-test-{{ randAlphaNum 5 | lower }}
+#   labels:
+#     {{- include "fodinfo.labels" . | nindent 4 }}
+#   annotations:
+#     "helm.sh/hook": test
+#     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+#     sidecar.istio.io/inject: "false"
+#     linkerd.io/inject: disabled
+#     appmesh.k8s.aws/sidecarInjectorWebhook: disabled
+# spec:
+#   containers:
+#     - name: curl
+#       image: curlimages/curl:7.69.0
+#       command:
+#         - sh
+#         - -c
+#         - |
+#           curl -sd 'data' ${fodinfo_SVC}/cache/test &&
+#           curl -s ${fodinfo_SVC}/cache/test | grep data &&
+#           curl -s -XDELETE ${fodinfo_SVC}/cache/test
+#       env:
+#       - name: fodinfo_SVC
+#         value: "{{ template "fodinfo.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
+#   restartPolicy: Never
+# {{- end }}

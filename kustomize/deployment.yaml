@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fodinfo
+spec:
+  minReadySeconds: 3
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: fodinfo
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9797"
+      labels:
+        app: fodinfo
+    spec:
+      containers:
+      - name: fodinfod
+        image: ghcr.io/pecigonzalo/fodinfo:5.2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP
+        - name: http-metrics
+          containerPort: 9797
+          protocol: TCP
+        - name: grpc
+          containerPort: 9999
+          protocol: TCP
+        # command:
+        # - ./fodinfo
+        # - --port=5000
+        # - --port-metrics=9797
+        # - --grpc-port=9999
+        # - --grpc-service-name=fodinfo
+        # - --level=info
+        # - --random-delay=false
+        # - --random-error=false
+        env:
+        - name: FODINFO_UI_COLOR
+          value: "#34577c"
+        livenessProbe:
+          httpGet:
+              path: /healthz
+              port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+              path: /readyz
+              port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi

@@ -43,14 +43,14 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 - [x] `GET /env` returns the environment variables as a JSON array
 - [x] `GET /headers` returns a JSON with the request HTTP headers
 - [x] `GET /delay/{seconds}` waits for the specified period
-- [ ] `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' fodinfo:9898/token | jq -r .token)`
-- [ ] `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" fodinfo:9898/token/validate`
+- [ ] `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' fodinfo:5000/token | jq -r .token)`
+- [ ] `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" fodinfo:5000/token/validate`
 - [ ] `GET /configs` returns a JSON with configmaps and/or secrets mounted in the `config` volume
 - [ ] `POST/PUT /cache/{key}` saves the posted content to Redis
 - [ ] `GET /cache/{key}` returns the content from Redis if the key exists
 - [ ] `DELETE /cache/{key}` deletes the key from Redis if exists
 - [ ] `POST /store` writes the posted content to disk at /data/hash and returns the SHA1 hash of the content
 - [ ] `GET /store/{hash}` returns the content of the file /data/hash if exists
-- [ ] `GET /ws/echo` echos content via websockets `podcli ws ws://localhost:9898/ws/echo`
+- [ ] `GET /ws/echo` echos content via websockets `podcli ws ws://localhost:5000/ws/echo`
 - [ ] `GET /chunked/{seconds}` uses `transfer-encoding` type `chunked` to give a partial response and then waits for the specified period
 - [ ] `GET /swagger.json` returns the API Swagger docs, used for Linkerd service profiling and Gloo routes discovery
