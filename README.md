@@ -37,12 +37,12 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 - [x] `GET /readyz` used by Kubernetes readiness probe
 - [ ] `POST /readyz/enable` signals the Kubernetes LB that this instance is ready to receive traffic
 - [ ] `POST /readyz/disable` signals the Kubernetes LB to stop sending requests to this instance
-- [ ] `GET /status/{code}` returns the status code
-- [ ] `GET /panic` crashes the process with exit code 255
+- [x] `GET /status/{code}` returns the status code
+- [x] `GET /panic` crashes the process with exit code 255
 - [ ] `POST /echo` forwards the call to the backend service and echos the posted content
-- [ ] `GET /env` returns the environment variables as a JSON array
-- [ ] `GET /headers` returns a JSON with the request HTTP headers
-- [ ] `GET /delay/{seconds}` waits for the specified period
+- [x] `GET /env` returns the environment variables as a JSON array
+- [x] `GET /headers` returns a JSON with the request HTTP headers
+- [x] `GET /delay/{seconds}` waits for the specified period
 - [ ] `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' podinfo:9898/token | jq -r .token)`
 - [ ] `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" podinfo:9898/token/validate`
 - [ ] `GET /configs` returns a JSON with configmaps and/or secrets mounted in the `config` volume
