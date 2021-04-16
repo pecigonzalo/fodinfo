@@ -6,6 +6,10 @@ fodinfo is a tiny web application made with ~~Go~~ F# that showcases best practi
 
 Im using this as a projec to learn F# and potentially create a usefull template for F# project.
 
+## Stack
+
+- [Falco](https://github.com/pimbrouwers/Falco)
+
 ## Specifications:
 
 - [x] Health checks (readiness and liveness)

@@ -1,12 +1,5 @@
 module fodinfo.Handlers.Echo
 
-open Microsoft.AspNetCore.Http
-open FSharp.Control.Tasks
-open Giraffe
+open Falco
 
-let handleEcho : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let response = "OK"
-            return! json response next ctx
-        }
+let handleEcho : HttpHandler = Response.ofJson "OK"

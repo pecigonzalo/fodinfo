@@ -1,31 +1,42 @@
-module fodinfo.Config
+namespace fodinfo
 
-open System
-open System.Reflection
+module Config =
+    open System
+    open System.Reflection
+    open System.Runtime.InteropServices
 
-type Cofiguration =
-    { hostname: string
-      uiLogo: string
-      uiColor: string
-      uiMessage: string
-      os: string
-      arch: string
-      runtime: string
-      version: string
-      num_cpu: string }
+    let Runtime =
+        let version =
+            Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                .InformationalVersion
+            |> string
 
-let getConfiguration =
-    let version =
-        Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            .InformationalVersion
-        |> string
+        {| hostname = Environment.MachineName
+           os = string Environment.OSVersion.Platform
+           arch = string RuntimeInformation.ProcessArchitecture
+           version = version
+           runtime = RuntimeInformation.FrameworkDescription
+           num_cpu = string Environment.ProcessorCount |}
 
-    { hostname = Environment.MachineName
-      uiLogo = "https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif"
-      uiColor = "#34577c"
-      uiMessage = sprintf "greetings from fodinfo v%s" version
-      os = string Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion
-      arch = string Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-      version = version
-      runtime = Runtime.InteropServices.RuntimeInformation.FrameworkDescription
-      num_cpu = string Environment.ProcessorCount }
+    type Configuration() =
+        let version = Runtime.version
+
+        let mutable uiLogo =
+            "https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif"
+
+        let mutable uiColor = "#34577c"
+
+        let mutable uiMessage =
+            sprintf "greetings from fodinfo v%s" version
+
+        member __.UILogo
+            with get () = uiLogo
+            and set (value) = uiLogo <- value
+
+        member __.UIColor
+            with get () = uiColor
+            and set (value) = uiColor <- value
+
+        member __.UIMessage
+            with get () = uiMessage
+            and set (value) = uiMessage <- value

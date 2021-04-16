@@ -1,38 +1,26 @@
 module fodinfo.Handlers.Info
 
-open Microsoft.AspNetCore.Http
-open FSharp.Control.Tasks
-open Giraffe
-open fodinfo
-
-type RunetimeResponse =
-    { Hostname: string
-      Version: string
-      Revision: string
-      Color: string
-      Logo: string
-      Message: string
-      OS: string
-      ARCH: string
-      Runtime: string
-      NumCPU: string }
+open Microsoft.Extensions.Options
+open Falco
 
 let handleInfo : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let config = Config.getConfiguration
+    fun ctx ->
+        let config =
+            ctx
+                .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
+                .Value
 
-            let response =
-                { Hostname = config.hostname
-                  Version = config.version
-                  Revision = "OK"
-                  Color = config.uiColor
-                  Logo = config.uiLogo
-                  Message = config.uiMessage
-                  OS = config.os
-                  ARCH = config.arch
-                  Runtime = config.runtime
-                  NumCPU = config.num_cpu }
+        let runtime = fodinfo.Config.Runtime
 
-            return! json response next ctx
-        }
+        {| Hostname = runtime.hostname
+           Version = runtime.version
+           Color = config.UIColor
+           Logo = config.UILogo
+           Message = config.UIMessage
+           Revision = "OK"
+           OS = runtime.os
+           ARCH = runtime.arch
+           Runtime = runtime.runtime
+           NumCPU = runtime.num_cpu |}
+        |> Response.ofJson
+        <| ctx
