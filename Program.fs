@@ -90,7 +90,7 @@ let main args =
                     get "/api/status/{code}" Handlers.Status.handleStatus
 
                     get "/api/headers" Handlers.Headers.handleHeaders
-                    get "/api/delay/{seconds}" (Response.ofPlainText "waits for the specified period")
+                    get "/api/delay/{seconds}" Handlers.Delay.handleDelay
                     post
                         "/api/token"
                         (Response.ofPlainText
