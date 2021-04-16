@@ -1,6 +1,6 @@
 # fodinfo
 
-fodinfo is a tiny web application made with ~~Go~~ F# that showcases best practices of running microservices in Kubernetes. fodinfo is a F# port of the great work of [@stefanprodan](https://github.com/stefanprodan) in https://github.com/stefanprodan/fodinfo to F#.
+fodinfo is a tiny web application made with ~~Go~~ F# that showcases best practices of running microservices in Kubernetes. fodinfo is a F# port of the great work of [@stefanprodan](https://github.com/stefanprodan) in https://github.com/stefanprodan/podinfo to F#.
 
 ## Why?
 
@@ -31,7 +31,7 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 ## Web API:
 
 - [ ] `GET /` prints runtime information
-- [x] `GET /version` prints podinfo version and git commit hash
+- [x] `GET /version` prints fodinfo version and git commit hash
 - [x] `GET /metrics` return HTTP requests duration and Go runtime metrics
 - [x] `GET /healthz` used by Kubernetes liveness probe
 - [x] `GET /readyz` used by Kubernetes readiness probe
@@ -43,8 +43,8 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 - [x] `GET /env` returns the environment variables as a JSON array
 - [x] `GET /headers` returns a JSON with the request HTTP headers
 - [x] `GET /delay/{seconds}` waits for the specified period
-- [ ] `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' podinfo:9898/token | jq -r .token)`
-- [ ] `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" podinfo:9898/token/validate`
+- [ ] `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' fodinfo:9898/token | jq -r .token)`
+- [ ] `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" fodinfo:9898/token/validate`
 - [ ] `GET /configs` returns a JSON with configmaps and/or secrets mounted in the `config` volume
 - [ ] `POST/PUT /cache/{key}` saves the posted content to Redis
 - [ ] `GET /cache/{key}` returns the content from Redis if the key exists
