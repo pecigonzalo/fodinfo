@@ -89,7 +89,7 @@ let main args =
                         (Response.ofPlainText "signals the Kubernetes LB to stop sending requests to this instance")
                     get "/api/status/{code}" Handlers.Status.handleStatus
 
-                    get "/api/headers" (Response.ofPlainText "returns a JSON with the request HTTP headers")
+                    get "/api/headers" Handlers.Headers.handleHeaders
                     get "/api/delay/{seconds}" (Response.ofPlainText "waits for the specified period")
                     post
                         "/api/token"
