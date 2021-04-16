@@ -11,6 +11,7 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Server.Kestrel.Core
+open Microsoft.AspNetCore.Diagnostics.HealthChecks
 
 let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) =
     logger.Enrich.FromLogContext() |> ignore
@@ -30,7 +31,11 @@ let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection
     services.Configure<Config.Configuration>(ctx.Configuration.GetSection("fodinfo"))
     |> ignore
 
-    services.AddHealthChecks() |> ignore
+    services
+        .AddHealthChecks()
+        .AddCheck<HealthChecks.Toggle.HealthCheck>("Manual")
+    |> ignore
+
     services.AddRouting() |> ignore
     services.AddFalco() |> ignore
 
@@ -81,12 +86,8 @@ let main args =
                     get "/api/echo" Handlers.Echo.handleEcho
                     get "/api/env" Handlers.Env.handleEnv
                     get "/api/config" Handlers.Config.handleConfig
-                    post
-                        "/api/readyz/enable"
-                        (Response.ofPlainText "signals the Kubernetes LB that this instance is ready to receive traffic")
-                    post
-                        "/api/readyz/disable"
-                        (Response.ofPlainText "signals the Kubernetes LB to stop sending requests to this instance")
+                    post "/api/readyz/enable" Handlers.Readyz.handleReadyzEnable
+                    post "/api/readyz/disable" Handlers.Readyz.handleReadyzDisable
                     get "/api/status/{code}" Handlers.Status.handleStatus
 
                     get "/api/headers" Handlers.Headers.handleHeaders
