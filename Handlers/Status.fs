@@ -1,6 +1,5 @@
 module fodinfo.Handlers.Status
 
-open System
 open Falco
 
 let handleStatus : HttpHandler =
