@@ -80,7 +80,46 @@ let main args =
                     get "/api/panic" Handlers.Panic.handlePanic
                     get "/api/echo" Handlers.Echo.handleEcho
                     get "/api/env" Handlers.Env.handleEnv
-                    get "/api/config" Handlers.Config.handleConfig ]
+                    get "/api/config" Handlers.Config.handleConfig
+                    post
+                        "/api/readyz/enable"
+                        (Response.ofPlainText "signals the Kubernetes LB that this instance is ready to receive traffic")
+                    post
+                        "/api/readyz/disable"
+                        (Response.ofPlainText "signals the Kubernetes LB to stop sending requests to this instance")
+                    get "/api/status/{code}" Handlers.Status.handleStatus
+
+                    get "/api/headers" (Response.ofPlainText "returns a JSON with the request HTTP headers")
+                    get "/api/delay/{seconds}" (Response.ofPlainText "waits for the specified period")
+                    post
+                        "/api/token"
+                        (Response.ofPlainText
+                            "issues a JWT token valid for one minute JWT=$(curl -sd 'anon' podinfo:9898/token | jq -r .token)")
+                    get
+                        "/api/token/validate"
+                        (Response.ofPlainText
+                            """validates the JWT token curl -H "Authorization: Bearer $JWT" podinfo:9898/token/validate""")
+                    post "/api/cache/{key}" (Response.ofPlainText "saves the posted content to Redis")
+                    get "/api/cache/{key}" (Response.ofPlainText "returns the content from Redis if the key exists")
+                    delete "/api/cache/{key}" (Response.ofPlainText "deletes the key from Redis if exists")
+                    post
+                        "/api/store"
+                        (Response.ofPlainText
+                            "writes the posted content to disk at /data/hash and returns the SHA1 hash of the content")
+                    get
+                        "/api/store/{hash}"
+                        (Response.ofPlainText "returns the content of the file /data/hash if exists")
+                    get
+                        "/api/ws/echo"
+                        (Response.ofPlainText "echos content via websockets podcli ws ws://localhost:9898/ws/echo")
+                    get
+                        "/api/chunked/{seconds}"
+                        (Response.ofPlainText
+                            "uses transfer-encoding type chunked to give a partial response and then waits for the specified period")
+                    get
+                        "/api/swagger.json"
+                        (Response.ofPlainText
+                            "returns the API Swagger docs, used for Linkerd service profiling and Gloo routes discovery") ]
     }
 
     exitCode
