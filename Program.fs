@@ -5,6 +5,7 @@ open Falco.Routing
 open Falco.HostBuilder
 open Prometheus
 open Serilog
+open Serilog.Events
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
@@ -13,16 +14,23 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Server.Kestrel.Core
 
 let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) =
+
+    logger.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    |> ignore
+
+    match ctx.HostingEnvironment.IsDevelopment() with
+    | true ->
+        logger.WriteTo.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+        |> ignore
+    | false ->
+        logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
+        |> ignore
+
     logger.Enrich.FromLogContext() |> ignore
-    logger.MinimumLevel.Debug() |> ignore
 
     logger.ReadFrom.Configuration(ctx.Configuration)
     |> ignore
 
-    match ctx.HostingEnvironment.IsDevelopment() with
-    | true -> logger.WriteTo.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
-    | false -> logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
-    |> ignore
 
 let configureKestrel (ctx: WebHostBuilderContext) (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
 
