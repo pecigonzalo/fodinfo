@@ -29,6 +29,8 @@ module Config =
         let mutable uiMessage =
             sprintf "greetings from fodinfo v%s" version
 
+        let mutable dataPath = sprintf "/data"
+
         member _.UILogo
             with get () = uiLogo
             and set (value) = uiLogo <- value
@@ -40,3 +42,7 @@ module Config =
         member _.UIMessage
             with get () = uiMessage
             and set (value) = uiMessage <- value
+
+        member _.DataPath
+            with get () = dataPath
+            and set (value) = dataPath <- value
