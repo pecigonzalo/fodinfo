@@ -19,6 +19,6 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="pkgs/prometheus-net/Prometheus.AspNetCore/Prometheus.AspNetCore.csproj" />
+    <ProjectReference Include="vendor/prometheus-net/Prometheus.AspNetCore/Prometheus.AspNetCore.csproj" />
   </ItemGroup>
 </Project>

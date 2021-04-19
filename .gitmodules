@@ -1,3 +1,3 @@
-[submodule "pkgs/prometheus-net"]
-	path = pkgs/prometheus-net
+[submodule "vendor/prometheus-net"]
+	path = vendor/prometheus-net
 	url = git@github.com:mvSapphire/prometheus-net.git
