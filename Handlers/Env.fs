@@ -1,7 +1,7 @@
 module fodinfo.Handlers.Env
 
-open System
 open Falco
+open System
 
 let handleEnv : HttpHandler =
     Environment.GetEnvironmentVariables()

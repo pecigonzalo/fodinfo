@@ -5,25 +5,32 @@ open Falco.Routing
 open Falco.HostBuilder
 open Prometheus
 open Serilog
+open Serilog.Events
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Server.Kestrel.Core
-open Microsoft.AspNetCore.Diagnostics.HealthChecks
 
 let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) =
+
+    logger.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    |> ignore
+
+    match ctx.HostingEnvironment.IsDevelopment() with
+    | true ->
+        logger.WriteTo.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+        |> ignore
+    | false ->
+        logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
+        |> ignore
+
     logger.Enrich.FromLogContext() |> ignore
-    logger.MinimumLevel.Debug() |> ignore
 
     logger.ReadFrom.Configuration(ctx.Configuration)
     |> ignore
 
-    match ctx.HostingEnvironment.IsDevelopment() with
-    | true -> logger.WriteTo.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
-    | false -> logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
-    |> ignore
 
 let configureKestrel (ctx: WebHostBuilderContext) (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
 
@@ -103,13 +110,8 @@ let main args =
                     post "/api/cache/{key}" (Response.ofPlainText "saves the posted content to Redis")
                     get "/api/cache/{key}" (Response.ofPlainText "returns the content from Redis if the key exists")
                     delete "/api/cache/{key}" (Response.ofPlainText "deletes the key from Redis if exists")
-                    post
-                        "/api/store"
-                        (Response.ofPlainText
-                            "writes the posted content to disk at /data/hash and returns the SHA1 hash of the content")
-                    get
-                        "/api/store/{hash}"
-                        (Response.ofPlainText "returns the content of the file /data/hash if exists")
+                    post "/api/store" Handlers.Store.handleStorePost
+                    get "/api/store/{hash}" Handlers.Store.handleStoreGet
                     get
                         "/api/ws/echo"
                         (Response.ofPlainText "echos content via websockets podcli ws ws://localhost:9898/ws/echo")
