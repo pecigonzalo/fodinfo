@@ -43,6 +43,7 @@ let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection
         .AddCheck<HealthChecks.Toggle.HealthCheck>("Manual")
     |> ignore
 
+    services.AddHttpClient() |> ignore
     services.AddRouting() |> ignore
     services.AddFalco() |> ignore
 
@@ -90,13 +91,12 @@ let main args =
                     get "/version" Handlers.Version.handleVersion
                     get "/api/info" Handlers.Info.handleInfo
                     get "/api/panic" Handlers.Panic.handlePanic
-                    get "/api/echo" Handlers.Echo.handleEcho
+                    post "/api/echo" Handlers.Echo.handleEcho
                     get "/api/env" Handlers.Env.handleEnv
                     get "/api/config" Handlers.Config.handleConfig
                     post "/api/readyz/enable" Handlers.Readyz.handleReadyzEnable
                     post "/api/readyz/disable" Handlers.Readyz.handleReadyzDisable
                     get "/api/status/{code}" Handlers.Status.handleStatus
-
                     get "/api/headers" Handlers.Headers.handleHeaders
                     get "/api/delay/{seconds}" Handlers.Delay.handleDelay
                     post

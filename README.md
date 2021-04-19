@@ -39,7 +39,7 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 - [x] `POST /readyz/disable` signals the Kubernetes LB to stop sending requests to this instance
 - [x] `GET /status/{code}` returns the status code
 - [x] `GET /panic` crashes the process with exit code 255
-- [ ] `POST /echo` forwards the call to the backend service and echos the posted content
+- [x] `POST /echo` forwards the call to the backend service and echos the posted content
 - [x] `GET /env` returns the environment variables as a JSON array
 - [x] `GET /headers` returns a JSON with the request HTTP headers
 - [x] `GET /delay/{seconds}` waits for the specified period

@@ -31,6 +31,9 @@ module Config =
 
         let mutable dataPath = sprintf "/data"
 
+        // TODO: Implement as a list of backends to call
+        let mutable backendURL = sprintf "http://localhost:9898/store"
+
         member _.UILogo
             with get () = uiLogo
             and set (value) = uiLogo <- value
@@ -46,3 +49,7 @@ module Config =
         member _.DataPath
             with get () = dataPath
             and set (value) = dataPath <- value
+
+        member _.BackendURL
+            with get () = backendURL
+            and set (value) = backendURL <- value
