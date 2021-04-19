@@ -18,7 +18,7 @@ Im using this as a projec to learn F# and potentially create a usefull template 
 - [ ] File watcher for secrets and configmaps
 - [ ] Tracing with Istio and Jaeger
 - [ ] Linkerd service profile
-- [ ] Structured logging
+- [x] Structured logging
 - [ ] Fault injection (random errors and latency)
 - [ ] Swagger docs
 - [ ] Helm and Kustomize installers
