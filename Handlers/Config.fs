@@ -1,7 +1,7 @@
 module fodinfo.Handlers.Config
 
-open Microsoft.Extensions.Configuration
 open Falco
+open Microsoft.Extensions.Configuration
 
 let handleConfig : HttpHandler =
     fun ctx ->
