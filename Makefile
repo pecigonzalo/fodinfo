@@ -3,13 +3,13 @@ NAME:=fodinfo
 DOCKER_REPOSITORY:=ghcr.io/pecigonzalo
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 GIT_COMMIT:=$(shell git describe --dirty --always)
-VERSION:=$(shell grep -oP '(?<=<VersionPrefix>).*?(?=</VersionPrefix>)' fodinfo.fsproj)
+VERSION:=$(shell grep -oP '(?<=<VersionPrefix>).*?(?=</VersionPrefix>)' src/fodinfo.fsproj)
 
-run:
-	dotnet run
+default: build-container
 
+.PHONY: test
 test:
-	true
+	test/e2e.sh
 
 build:
 	dotnet build \

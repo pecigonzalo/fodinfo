@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fodinfo", "fodinfo.fsproj", "{5EADC3D9-F3C0-4DA2-A7A3-A420F5CBA1F4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fodinfo", "src/fodinfo.fsproj", "{5EADC3D9-F3C0-4DA2-A7A3-A420F5CBA1F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,9 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 
-WORKDIR /src
-COPY fodinfo.sln ./
-COPY fodinfo.fsproj ./
+WORKDIR /build
 COPY vendor ./vendor
+COPY fodinfo.sln ./
+COPY src/fodinfo.fsproj ./src/
 RUN dotnet restore
 
 COPY . .
