@@ -13,8 +13,8 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.fs" />
     <Compile Include="HealthChecks/Toggle.fs" />
-    <Compile Include="Config/Config.fs" />
     <Compile Include="HealthChecks/*.fs" />
     <Compile Include="Handlers/*.fs" />
     <Compile Include="Endpoints.fs" />
