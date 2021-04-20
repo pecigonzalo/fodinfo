@@ -9,5 +9,5 @@ let handleStatus : HttpHandler =
         let code = route.GetInt "code" 200
 
         Response.withStatusCode code
-        >> Response.ofJson {| Status = code |}
+        >> Response.ofJson {| status = code |}
         <| ctx
