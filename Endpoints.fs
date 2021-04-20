@@ -1,6 +1,7 @@
 [<AutoOpen>]
 module fodinfo.Endpoints
 
+open fodinfo.Handlers
 open Falco
 open Falco.Routing
 
@@ -12,16 +13,16 @@ let subRoute (path: string) (subList: HttpEndpoint list) : HttpEndpoint list =
                   Pattern = $"{path}{x.Pattern}" })
 
 let apiEndpoints : HttpEndpoint list =
-    [ get "/info" Handlers.Info.handleInfo
-      get "/panic" Handlers.Panic.handlePanic
-      post "/echo" Handlers.Echo.handleEcho
-      get "/env" Handlers.Env.handleEnv
-      get "/config" Handlers.Config.handleConfig
-      post "/readyz/enable" Handlers.Readyz.handleReadyzEnable
-      post "/readyz/disable" Handlers.Readyz.handleReadyzDisable
-      get "/status/{code}" Handlers.Status.handleStatus
-      get "/headers" Handlers.Headers.handleHeaders
-      get "/delay/{seconds}" Handlers.Delay.handleDelay
+    [ get "/info" handleInfo
+      get "/panic" handlePanic
+      post "/echo" handleEcho
+      get "/env" handleEnv
+      get "/config" handleConfig
+      post "/readyz/enable" handleReadyzEnable
+      post "/readyz/disable" handleReadyzDisable
+      get "/status/{code}" handleStatus
+      get "/headers" handleHeaders
+      get "/delay/{seconds}" handleDelay
       post
           "/token"
           (Response.ofPlainText
@@ -33,8 +34,8 @@ let apiEndpoints : HttpEndpoint list =
       post "/cache/{key}" (Response.ofPlainText "saves the posted content to Redis")
       get "/cache/{key}" (Response.ofPlainText "returns the content from Redis if the key exists")
       delete "/cache/{key}" (Response.ofPlainText "deletes the key from Redis if exists")
-      post "/store" Handlers.Store.handleStorePost
-      get "/store/{hash}" Handlers.Store.handleStoreGet
+      post "/store" handleStorePost
+      get "/store/{hash}" handleStoreGet
       get "/ws/echo" (Response.ofPlainText "echos content via websockets podcli ws ws://localhost:9898/ws/echo")
       get
           "/chunked/{seconds}"
@@ -46,6 +47,6 @@ let apiEndpoints : HttpEndpoint list =
               "returns the API Swagger docs, used for Linkerd service profiling and Gloo routes discovery") ]
 
 let rootEndpoints : HttpEndpoint list =
-    [ get "/healthz" Handlers.Healthz.handleHealthz
-      get "/version" Handlers.Version.handleVersion ]
+    [ get "/healthz" handleHealthz
+      get "/version" handleVersion ]
     @ subRoute "/api" apiEndpoints

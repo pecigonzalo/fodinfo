@@ -1,3 +1,4 @@
+[<AutoOpen>]
 module fodinfo.Handlers.Store
 
 open Falco

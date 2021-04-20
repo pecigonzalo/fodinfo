@@ -1,3 +1,4 @@
+[<AutoOpen>]
 module fodinfo.Handlers.Version
 
 open Falco
