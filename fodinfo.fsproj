@@ -10,6 +10,7 @@
     <!-- <PackageReference Include="prometheus-net.AspNetCore" Version="4.1.1" /> -->
     <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="4.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HealthChecks/Toggle.fs" />

@@ -18,12 +18,22 @@ let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) 
     logger.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     |> ignore
 
+    // TODO: Review using Async writters. This is currently used as the performance is otherwise impacted
+    // by printting logs to console.
     match ctx.HostingEnvironment.IsDevelopment() with
     | true ->
-        logger.WriteTo.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+        logger.WriteTo.Async(
+            (fun a ->
+                a.Console(theme = Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+                |> ignore)
+        )
         |> ignore
     | false ->
-        logger.WriteTo.Console(Formatting.Compact.RenderedCompactJsonFormatter())
+        logger.WriteTo.Async(
+            (fun a ->
+                a.Console(Formatting.Compact.RenderedCompactJsonFormatter())
+                |> ignore)
+        )
         |> ignore
 
     logger.Enrich.FromLogContext() |> ignore
