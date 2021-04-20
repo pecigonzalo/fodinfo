@@ -1,10 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 
 WORKDIR /src
-COPY *.sln ./
-COPY *.fsproj ./
-COPY pkgs/prometheus-net/Prometheus.NetStandard/Prometheus.NetStandard.csproj /src/pkgs/prometheus-net/Prometheus.NetStandard/Prometheus.NetStandard.csproj
-COPY pkgs/prometheus-net/Prometheus.AspNetCore/Prometheus.AspNetCore.csproj /src/pkgs/prometheus-net/Prometheus.AspNetCore/Prometheus.AspNetCore.csproj
+COPY fodinfo.sln ./
+COPY fodinfo.fsproj ./
+COPY vendor ./vendor
 RUN dotnet restore
 
 COPY . .
