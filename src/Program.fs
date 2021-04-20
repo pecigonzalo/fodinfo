@@ -2,6 +2,7 @@ module fodinfo.Program
 
 open Falco
 open Falco.HostBuilder
+open Argu
 open Prometheus
 open Serilog
 open Serilog.Events
@@ -43,9 +44,9 @@ let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) 
 
 let configureKestrel (ctx: WebHostBuilderContext) (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
 
+
 let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection) =
-    services.Configure<Config.Configuration>(ctx.Configuration.GetSection("fodinfo"))
-    |> ignore
+    services.AddArgu<Config.CLIArguments>(raiseOnUsage = true)
 
     services
         .AddHealthChecks()
@@ -90,6 +91,19 @@ let configureWebHost (endpoints: HttpEndpoint list) (webHost: IWebHostBuilder) =
 [<EntryPoint>]
 let main args =
     let exitCode = 0
+
+    // let parser =
+    //     ArgumentParser.Create<CLIArguments>(programName = "fodinfo")
+
+    // try
+    //     parser.ParseCommandLine(inputs = args, raiseOnUsage = true)
+    //     |> ignore
+
+    //     webHost args {
+    //         configure configureWebHost
+    //         endpoints rootEndpoints
+    //     }
+    // with e -> printfn "%s" e.Message
 
     webHost args {
         configure configureWebHost

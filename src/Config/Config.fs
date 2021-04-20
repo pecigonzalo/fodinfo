@@ -1,9 +1,19 @@
 namespace fodinfo
 
 module Config =
+    open Argu
     open System
     open System.Reflection
     open System.Runtime.InteropServices
+
+    type CLIArguments =
+        | [<Mandatory>] UILogo of uilogo: string
+        | UIColor of uicolor: string
+        interface IArgParserTemplate with
+            member this.Usage =
+                match this with
+                | UILogo _ -> "URL to the website logo"
+                | UIColor _ -> "Website background color"
 
     let Runtime =
         let version =
