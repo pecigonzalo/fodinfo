@@ -8,9 +8,10 @@ open Serilog.Events
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
-open Microsoft.Extensions.Hosting
-open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Server.Kestrel.Core
+open Microsoft.Extensions.Hosting
+open Microsoft.Extensions.Options
+open Microsoft.Extensions.DependencyInjection
 
 let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) =
 
@@ -44,7 +45,21 @@ let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) 
 let configureKestrel (ctx: WebHostBuilderContext) (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
 
 let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection) =
-    services.Configure<Config.Configuration>(ctx.Configuration.GetSection("fodinfo"))
+    let configuration = ctx.Configuration
+
+    // Enable NetEscapades.Configuration.Validation
+    services.UseConfigurationValidation() |> ignore
+
+    services.ConfigureValidatableSetting<Config.Configuration>(configuration.GetSection(Config.Configuration.Name))
+    |> ignore
+
+    // Add scoped service for easy access
+    services.AddScoped<Config.Configuration>(
+        (fun ctx ->
+            ctx
+                .GetRequiredService<IOptionsMonitor<Config.Configuration>>()
+                .CurrentValue)
+    )
     |> ignore
 
     services

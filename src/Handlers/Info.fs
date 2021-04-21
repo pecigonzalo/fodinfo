@@ -1,17 +1,14 @@
 [<AutoOpen>]
 module fodinfo.Handlers.Info
 
+open fodinfo
 open Falco
-open Microsoft.Extensions.Options
 
 let handleInfo : HttpHandler =
     fun ctx ->
-        let config =
-            ctx
-                .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
-                .Value
+        let config = ctx.GetService<Config.Configuration>()
 
-        let runtime = fodinfo.Config.Runtime
+        let runtime = Config.Runtime
 
         {| hostname = runtime.hostname
            version = runtime.version
