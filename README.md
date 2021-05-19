@@ -4,7 +4,7 @@ fodinfo is a tiny web application made with ~~Go~~ F# that showcases best practi
 
 ## Why?
 
-Im using this as a projec to learn F# and potentially create a usefull template for F# project.
+Im using this as a project to learn F# and potentially create a usefull template for F# project.
 
 ## Stack
 
