@@ -4,10 +4,23 @@ open System
 open System.Reflection
 open System.Runtime.InteropServices
 
-let Version =
+let private informationalVersion =
     Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
         .InformationalVersion
     |> string
+
+/// Semantic version: informational version without the git revision suffix.
+let Version =
+    match informationalVersion.Split('+', 2) with
+    | [| version; _ |] -> version
+    | _ -> informationalVersion
+
+/// Git revision embedded by the build via `-p:SourceRevisionId` (see Makefile).
+/// The SDK appends it to the informational version as a `+<revision>` suffix.
+let Revision =
+    match informationalVersion.Split('+', 2) with
+    | [| _; revision |] when not (String.IsNullOrWhiteSpace revision) -> revision
+    | _ -> "unknown"
 
 let Runtime =
     {| hostname = Environment.MachineName

@@ -1,12 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
+ARG SOURCE_REVISION_ID
+
 WORKDIR /build
 COPY fodinfo.sln ./
 COPY src/fodinfo.fsproj ./src/
 RUN dotnet restore
 
 COPY . .
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish -c release -o /app --no-restore -p:SourceRevisionId=$SOURCE_REVISION_ID
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app

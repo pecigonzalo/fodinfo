@@ -4,6 +4,6 @@ module fodinfo.Handlers.Version
 open Falco
 
 let handleVersion : HttpHandler =
-    {| commit = ""
+    {| commit = fodinfo.Config.Revision
        version = fodinfo.Config.Runtime.version |}
     |> Response.ofJson

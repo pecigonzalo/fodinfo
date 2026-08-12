@@ -2,7 +2,7 @@ TAG?=latest
 NAME:=fodinfo
 DOCKER_REPOSITORY:=ghcr.io/pecigonzalo
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
-GIT_COMMIT:=$(shell git describe --dirty --always)
+GIT_COMMIT:=$(shell git rev-parse HEAD)
 VERSION:=$(shell grep -oP '(?<=<VersionPrefix>).*?(?=</VersionPrefix>)' src/fodinfo.fsproj)
 
 default: build-container
@@ -23,7 +23,7 @@ build-charts:
 	helm package charts/*
 
 build-container:
-	docker build -t $(DOCKER_IMAGE_NAME):$(VERSION) .
+	docker build --build-arg SOURCE_REVISION_ID=$(GIT_COMMIT) -t $(DOCKER_IMAGE_NAME):$(VERSION) .
 
 push-container:
 	docker tag $(DOCKER_IMAGE_NAME):$(VERSION) $(DOCKER_IMAGE_NAME):latest
