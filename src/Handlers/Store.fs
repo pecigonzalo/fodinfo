@@ -2,7 +2,6 @@
 module fodinfo.Handlers.Store
 
 open Falco
-open FSharp.Control.Tasks
 open Microsoft.Extensions.Options
 open System.IO
 open System.Text
@@ -12,10 +11,7 @@ let handleStoreGet : HttpHandler =
     fun ctx ->
         let route = Request.getRoute ctx
 
-        let config =
-            ctx
-                .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
-                .Value
+        let config = ctx.Plug<IOptionsSnapshot<fodinfo.Config.Configuration>>().Value
 
         match route.TryGetString "hash" with
         | None ->
@@ -40,12 +36,9 @@ let stringToSha1 (string: string) =
 let handleStorePost : HttpHandler =
     fun ctx ->
         task {
-            let config =
-                ctx
-                    .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
-                    .Value
+            let config = ctx.Plug<IOptionsSnapshot<fodinfo.Config.Configuration>>().Value
 
-            let! body = ctx.Request.GetBodyAsync()
+            let! body = Request.getBodyString ctx
 
             let hash = body |> stringToSha1
 

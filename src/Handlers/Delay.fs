@@ -9,7 +9,7 @@ let handleDelay : HttpHandler =
 
         let route = Request.getRoute ctx
 
-        let seconds = route.GetInt "seconds" 0
+        let seconds = route.GetInt("seconds", 0)
 
         seconds
         |> secondsToMs

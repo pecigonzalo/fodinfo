@@ -2,7 +2,6 @@
 module fodinfo.Handlers.Echo
 
 open Falco
-open FSharp.Control.Tasks
 open Microsoft.Extensions.Options
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Primitives
@@ -41,17 +40,11 @@ let copyTracingHeader (headers: IHeaderDictionary) (request: HttpRequestMessage)
 let handleEcho : HttpHandler =
     fun ctx ->
         task {
-            let config =
-                ctx
-                    .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
-                    .Value
+            let config = ctx.Plug<IOptionsSnapshot<fodinfo.Config.Configuration>>().Value
 
-            let client =
-                ctx
-                    .GetService<IHttpClientFactory>()
-                    .CreateClient()
+            let client = ctx.Plug<IHttpClientFactory>().CreateClient()
 
-            let! body = ctx.Request.GetBodyAsync()
+            let! body = Request.getBodyString ctx
 
             use httpRequestMessage =
                 new HttpRequestMessage(HttpMethod.Post, config.BackendURL)

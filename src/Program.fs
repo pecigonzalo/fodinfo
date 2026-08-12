@@ -1,18 +1,17 @@
 module fodinfo.Program
 
 open Falco
-open Falco.HostBuilder
+open Falco.Routing
 open Prometheus
 open Serilog
 open Serilog.Events
-open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Hosting
-open Microsoft.Extensions.Hosting
-open Microsoft.Extensions.DependencyInjection
+open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Server.Kestrel.Core
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
 
-let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) =
+let configureLogging (ctx: HostBuilderContext) (logger: LoggerConfiguration) =
 
     logger.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     |> ignore
@@ -41,9 +40,9 @@ let configureLogging (ctx: WebHostBuilderContext) (logger: LoggerConfiguration) 
     |> ignore
 
 
-let configureKestrel (ctx: WebHostBuilderContext) (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
+let configureKestrel (kestrel: KestrelServerOptions) = kestrel.AddServerHeader <- false
 
-let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection) =
+let configureServices (ctx: HostBuilderContext) (services: IServiceCollection) =
     services.Configure<Config.Configuration>(ctx.Configuration.GetSection("fodinfo"))
     |> ignore
 
@@ -54,48 +53,43 @@ let configureServices (ctx: WebHostBuilderContext) (services: IServiceCollection
 
     services.AddHttpClient() |> ignore
     services.AddRouting() |> ignore
-    services.AddFalco() |> ignore
 
-let configureApp (endpoints: HttpEndpoint list) (ctx: WebHostBuilderContext) (app: IApplicationBuilder) =
-    match ctx.HostingEnvironment.IsDevelopment() with
-    | true -> app.UseDeveloperExceptionPage()
-    | false ->
+let configureApp (endpoints: HttpEndpoint list) (app: WebApplication) =
+    if app.Environment.IsDevelopment() then
+        app.UseDeveloperExceptionPage() |> ignore
+    else
         app.UseFalcoExceptionHandler(
             Response.withStatusCode 500
             >> Response.ofPlainText "Server error"
         )
-    |> ignore
+        |> ignore
 
-    [ app.UseSerilogRequestLogging()
-      app.UseDefaultFiles()
-      app.UseStaticFiles()
-      app.UseRouting()
-      app.UseMetricServer("/metrics")
-      app.UseHealthChecks(PathString("/readyz"))
-      app.UseHttpMetrics(
-          configure =
-              (fun options ->
-                  options.AddLabel(labelName = "path", valueProvider = (fun ctx -> string ctx.Request.Path)))
-      )
-      app.UseFalco(endpoints) ]
+    app.UseSerilogRequestLogging() |> ignore
+    app.UseDefaultFiles() |> ignore
+    app.UseStaticFiles() |> ignore
+    app.UseRouting() |> ignore
+    app.UseMetricServer("/metrics") |> ignore
+    app.UseHealthChecks(PathString("/readyz")) |> ignore
+    app.UseHttpMetrics(
+        configure =
+            (fun options ->
+                options.AddCustomLabel("path", fun ctx -> string ctx.Request.Path))
+    )
     |> ignore
-
-let configureWebHost (endpoints: HttpEndpoint list) (webHost: IWebHostBuilder) =
-    webHost
-        .UseSerilog(configureLogging)
-        .ConfigureKestrel(configureKestrel)
-        .ConfigureServices(configureServices)
-        .Configure(configureApp endpoints)
+    app.UseFalco(endpoints) |> ignore
 
 [<EntryPoint>]
 let main args =
-    let exitCode = 0
+    let builder = WebApplication.CreateBuilder(args)
 
-    webHost args {
-        configure configureWebHost
-        endpoints rootEndpoints
-    }
+    builder.Host.UseSerilog(configureLogging) |> ignore
+    builder.Services.Configure<KestrelServerOptions>(configureKestrel) |> ignore
+    builder.Host.ConfigureServices(configureServices) |> ignore
+
+    let app = builder.Build()
+    configureApp rootEndpoints app
+    app.Run()
 
     Log.CloseAndFlush() // Wait for logs that may be in the buffer
 
-    exitCode
+    0

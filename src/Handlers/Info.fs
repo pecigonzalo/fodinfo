@@ -6,10 +6,7 @@ open Microsoft.Extensions.Options
 
 let handleInfo : HttpHandler =
     fun ctx ->
-        let config =
-            ctx
-                .GetService<IOptionsSnapshot<fodinfo.Config.Configuration>>()
-                .Value
+        let config = ctx.Plug<IOptionsSnapshot<fodinfo.Config.Configuration>>().Value
 
         let runtime = fodinfo.Config.Runtime
 
