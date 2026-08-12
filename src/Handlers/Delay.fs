@@ -2,18 +2,20 @@
 module fodinfo.Handlers.Delay
 
 open Falco
+open System
+open System.Threading.Tasks
 
 let handleDelay : HttpHandler =
     fun ctx ->
-        let secondsToMs seconds = seconds * 1000
+        task {
+            let route = Request.getRoute ctx
 
-        let route = Request.getRoute ctx
+            match route.TryGetInt "seconds" with
+            | None ->
+                return! Response.withStatusCode 400 >> Response.ofPlainText "invalid seconds" <| ctx
+            | Some seconds ->
+                let delay = TimeSpan.FromSeconds(float seconds)
 
-        let seconds = route.GetInt("seconds", 0)
-
-        seconds
-        |> secondsToMs
-        |> Async.Sleep
-        |> Async.RunSynchronously
-
-        Response.ofJson seconds ctx
+                do! Task.Delay(max TimeSpan.Zero delay)
+                return! Response.ofJson {| seconds = seconds |} <| ctx
+        }

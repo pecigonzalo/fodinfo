@@ -9,9 +9,9 @@ open fodinfo.HealthChecks
 let handleReadyzEnable : HttpHandler =
     fun ctx ->
         Toggle.Agent.Enable()
-        Response.ofJson "OK" ctx
+        Response.withStatusCode 202 >> Response.ofEmpty <| ctx
 
 let handleReadyzDisable : HttpHandler =
     fun ctx ->
         Toggle.Agent.Disable()
-        Response.ofJson "OK" ctx
+        Response.withStatusCode 202 >> Response.ofEmpty <| ctx

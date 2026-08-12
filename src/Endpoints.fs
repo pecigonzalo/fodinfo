@@ -18,8 +18,6 @@ let apiEndpoints : HttpEndpoint list =
       post "/echo" handleEcho
       get "/env" handleEnv
       get "/config" handleConfig
-      post "/readyz/enable" handleReadyzEnable
-      post "/readyz/disable" handleReadyzDisable
       get "/status/{code}" handleStatus
       get "/headers" handleHeaders
       get "/delay/{seconds}" handleDelay
@@ -48,5 +46,7 @@ let apiEndpoints : HttpEndpoint list =
 
 let rootEndpoints : HttpEndpoint list =
     [ get "/healthz" handleHealthz
-      get "/version" handleVersion ]
+      get "/version" handleVersion
+      post "/readyz/enable" handleReadyzEnable
+      post "/readyz/disable" handleReadyzDisable ]
     @ subRoute "/api" apiEndpoints
