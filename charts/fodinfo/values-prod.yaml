@@ -30,11 +30,8 @@ service:
   enabled: true
   annotations: {}
   type: ClusterIP
-  metricsPort: 9797
   httpPort: 5000
   externalPort: 5000
-  grpcPort: 9999
-  grpcService: fodinfo
   nodePort: 31198
 
 # enable h2c protocol (non-TLS version of HTTP/2)

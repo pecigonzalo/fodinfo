@@ -39,5 +39,5 @@ type Configuration() =
     member val UIColor: string = "#34577c" with get, set
     member val UIMessage: string = sprintf "greetings from fodinfo v%s" Version with get, set
     member val DataPath: string = "/data" with get, set
-    // TODO: Implement as a list of backends to call
-    member val BackendURL: string = "http://localhost:9898/store" with get, set
+    // TODO: Implement as a list of backends to call; empty means echo the request content
+    member val BackendURL: string = "" with get, set

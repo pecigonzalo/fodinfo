@@ -11,7 +11,3 @@ spec:
       port: 5000
       protocol: TCP
       targetPort: http
-    - port: 9999
-      targetPort: grpc
-      protocol: TCP
-      name: grpc

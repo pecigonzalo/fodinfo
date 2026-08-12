@@ -51,11 +51,8 @@ Parameter | Default | Description
 `image.pullPolicy` | `IfNotPresent` | Image pull policy
 `service.enabled` | `true` | Create a Kubernetes Service, should be disabled when using [Flagger](https://flagger.app)
 `service.type` | `ClusterIP` | Type of the Kubernetes Service
-`service.metricsPort` | `9797` | Prometheus metrics endpoint port
 `service.httpPort` | `5000` | Container HTTP port
 `service.externalPort` | `5000` | ClusterIP HTTP port
-`service.grpcPort` | `9999` | ClusterIP gPRC port
-`service.grpcService` | `fodinfo` | gPRC service name
 `service.nodePort` | `31198` | NodePort for the HTTP endpoint
 `h2c.enabled` | `false` | Allow upgrading to h2c (non-TLS version of HTTP/2)
 `hpa.enabled` | `false` | Enables the Kubernetes HPA

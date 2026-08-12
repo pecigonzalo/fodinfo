@@ -5,6 +5,7 @@ open Falco
 open Microsoft.Extensions.Options
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Primitives
+open System
 open System.Net.Http
 open System.Collections.Generic
 
@@ -42,29 +43,37 @@ let handleEcho : HttpHandler =
         task {
             let config = ctx.Plug<IOptionsSnapshot<fodinfo.Config.Configuration>>().Value
 
-            let client = ctx.Plug<IHttpClientFactory>().CreateClient()
-
             let! body = Request.getBodyString ctx
 
-            use httpRequestMessage =
-                new HttpRequestMessage(HttpMethod.Post, config.BackendURL)
-
-            try
-                let! response =
-                    httpRequestMessage
-                    |> addContent body
-                    |> copyTracingHeader ctx.Request.Headers
-                    |> makeRequest client
-
-                let! body = response.Content.ReadAsStringAsync()
-
+            // Without a backend, echo the posted content directly (podinfo behavior)
+            if String.IsNullOrWhiteSpace config.BackendURL then
                 return!
-                    Response.withStatusCode (int response.StatusCode)
+                    Response.withStatusCode 202
+                    >> Response.withHeaders [ "X-Color", config.UIColor ]
                     >> Response.ofPlainText body
                     <| ctx
-            with :? HttpRequestException as ex ->
-                return!
-                    Response.withStatusCode 503
-                    >> Response.ofPlainText $"Failed to forward request: {ex.Message}"
-                    <| ctx
+            else
+                let client = ctx.Plug<IHttpClientFactory>().CreateClient()
+
+                use httpRequestMessage =
+                    new HttpRequestMessage(HttpMethod.Post, config.BackendURL)
+
+                try
+                    let! response =
+                        httpRequestMessage
+                        |> addContent body
+                        |> copyTracingHeader ctx.Request.Headers
+                        |> makeRequest client
+
+                    let! body = response.Content.ReadAsStringAsync()
+
+                    return!
+                        Response.withStatusCode (int response.StatusCode)
+                        >> Response.ofPlainText body
+                        <| ctx
+                with :? HttpRequestException as ex ->
+                    return!
+                        Response.withStatusCode 503
+                        >> Response.ofPlainText $"Failed to forward request: {ex.Message}"
+                        <| ctx
         }

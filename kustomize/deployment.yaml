@@ -17,7 +17,7 @@ spec:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "9797"
+        prometheus.io/port: "5000"
       labels:
         app: fodinfo
     spec:
@@ -29,23 +29,8 @@ spec:
         - name: http
           containerPort: 5000
           protocol: TCP
-        - name: http-metrics
-          containerPort: 9797
-          protocol: TCP
-        - name: grpc
-          containerPort: 9999
-          protocol: TCP
-        # command:
-        # - ./fodinfo
-        # - --port=5000
-        # - --port-metrics=9797
-        # - --grpc-port=9999
-        # - --grpc-service-name=fodinfo
-        # - --level=info
-        # - --random-delay=false
-        # - --random-error=false
         env:
-        - name: FODINFO_UI_COLOR
+        - name: FODINFO__UIColor
           value: "#34577c"
         livenessProbe:
           httpGet:

@@ -29,11 +29,8 @@ service:
   enabled: true
   annotations: {}
   type: ClusterIP
-  metricsPort: 9797
   httpPort: 5000
   externalPort: 5000
-  grpcPort: 9999
-  grpcService: fodinfo
   nodePort: 31198
   # the port used to bind the http port to the host
   # NOTE: requires privileged container with NET_BIND_SERVICE capability -- this is useful for testing
